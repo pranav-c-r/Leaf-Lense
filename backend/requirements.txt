@@ -18,10 +18,10 @@ PyPDF2==3.0.1
 python-docx==1.1.2
 Pillow==11.3.0
 beautifulsoup4==4.13.4
-google-generativeai
-langchain-google-genai
-langchain
-huggingface_hub
+google-generativeai==0.7.2
+langchain==0.3.4
+langchain-google-genai==0.3.0
+huggingface_hub==0.24.6
 attrs==23.1.0
 blinker==1.6.2
 certifi==2023.7.22
