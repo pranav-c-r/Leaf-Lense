@@ -1,0 +1,18 @@
+# FastAPI Price Prediction Service Dependencies
+
+# Core FastAPI framework and server
+fastapi>=0.104.1
+uvicorn[standard]>=0.24.0
+
+# Machine Learning and Data Processing
+pandas>=2.1.0
+scikit-learn>=1.3.0
+joblib>=1.3.0
+numpy>=1.24.0
+
+# API and HTTP utilities
+pydantic>=2.4.0
+python-multipart>=0.0.6
+
+# Development and monitoring
+python-dotenv>=1.0.0

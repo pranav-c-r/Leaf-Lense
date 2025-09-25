@@ -1,0 +1,17 @@
+# Ignore virtual environment and generated files, but keep source code
+# Created by venv; see https://docs.python.org/3/library/venv.html
+venv/
+__pycache__/
+
+# Trained models and large artifacts (keep out of repo)
+saved_models/
+*.pkl
+*.joblib
+*.h5
+
+# Dataset directories
+data/
+
+# Editor/temp
+.vscode/
+.DS_Store

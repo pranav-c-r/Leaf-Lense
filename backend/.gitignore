@@ -1,0 +1,83 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# C extensions
+*.so
+
+# Distribution / packaging
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# Virtual environments
+venv/
+env/
+ENV/
+.venv/
+.venv311/
+env.bak/
+venv.bak/
+serviceAccountKey.json
+# Environment variables
+.env
+serviceAccountKey.json
+# IDEs and editors
+.vscode/
+.idea/
+*.sublime-project
+*.sublime-workspace
+*.swp
+*.swo
+
+# Logs and databases
+*.log
+*.sqlite3
+*.db
+logs/
+
+# Pytest cache / coverage
+.pytest_cache/
+.coverage
+.cache
+
+# Jupyter Notebook
+.ipynb_checkpoints/
+*.ipynb
+
+# Migrations (if using Django or similar)
+migrations/
+
+# OS / System files
+.DS_Store
+Thumbs.db
+
+# Model files (trained models)
+*.h5
+*.keras
+*.pkl
+*.joblib
+
+# Dataset (do not push)
+test/
+train/
+valid/
+data/
+
+# Firebase credentials
+backend/serviceAccountKey.json
+
