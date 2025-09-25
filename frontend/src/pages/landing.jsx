@@ -201,20 +201,6 @@ import { useNavigate } from 'react-router-dom';
 
         {/* Hero Section with Prism Background */}
         <section className="relative overflow-hidden pt-32 pb-20 px-6 min-h-screen">
-          {/* Prism Background */}
-          <div className="absolute inset-0 z-0">
-            <Prism
-              animationType="rotate"
-              timeScale={1}
-              height={3.5}
-              baseWidth={5.5}
-              scale={3.6}
-              hueShift={1.26}
-              colorFrequency={1}
-              noise={0}
-              glow={0.8}
-            />
-          </div>
           
           {/* Content Overlay */}
           <div className="max-w-7xl mx-auto text-center relative z-10">
