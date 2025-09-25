@@ -454,17 +454,15 @@ const CropMarketplace = () => {
             <div className="space-y-2">
               {farmerQRCode && (
                 <>
-                  {/* Main payment button - direct app opening */}
                   <button 
-                    onClick={handleDirectPayment}
+                    // onClick={() => window.open(farmerQRCode, "_blank")}
+                    to={farmerQRCode}
                     disabled={loadingQR || paymentAttempted}
                     className="w-full bg-green-600 text-white py-3 rounded-xl hover:bg-green-700 transition-colors flex items-center justify-center space-x-2 disabled:opacity-50 disabled:cursor-not-allowed"
                   >
                     <ExternalLink className="h-4 w-4" />
                     <span>{getPaymentButtonText()}</span>
                   </button>
-                  
-                  {/* For QR code images, show manual instruction */}
                   {farmerQRCode.startsWith('data:image') && (
                     <div className="p-3 bg-blue-500/10 border border-blue-500/20 rounded-xl">
                       <div className="flex items-center space-x-2 mb-2">
