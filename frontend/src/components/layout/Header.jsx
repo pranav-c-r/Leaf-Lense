@@ -51,7 +51,7 @@ const Header = ({ setSidebarOpen }) => {
               </div>
               <input
                 type="text"
-                placeholder={t('currentLanguage') === 'hi' ? 'टूल्स, इनसाइट्स खोजें या AI से पूछें...' : t('currentLanguage') === 'ml' ? 'ടൂളുകൾ, സ്റ്റാറ്റിക്സ് തിരയുക അല്ലെങ്കിൽ AI യോട് ചോദിക്കുക...' : 'Search tools, insights, or ask AI...'}
+                placeholder={t('currentLanguage') === 'hi' ? 'टूल्स, इनसाइट्स खोजें या AI से पूछें...' : t('currentLanguage') === 'ml' ? 'ടൂളുകൾ, ഇൻസൈറ്റ്സ് തിരയുക അല്ലെങ്കിൽ AI യോട് ചോദിക്കുക...' : 'Search tools, insights, or ask AI...'}
                 className="block w-full pl-10 pr-3 py-2 border border-slate-600 rounded-lg bg-slate-800/50 text-white placeholder-slate-400 input-focus"
               />
             </div>

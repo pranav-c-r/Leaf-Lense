@@ -17,6 +17,7 @@ import {
   CloudRain,
   Thermometer
 } from 'lucide-react'
+import { useLanguage } from '../contexts/LanguageContext'
 
 const featureCards = [
   {
@@ -80,6 +81,8 @@ const weatherData = [
 ]
 
 const Dashboard = () => {
+  const { t } = useLanguage()
+  
   return (
     <div className="p-6 space-y-8">
       {/* Hero Section */}
@@ -98,10 +101,10 @@ const Dashboard = () => {
             </div>
             <div>
               <h1 className="text-4xl font-bold text-gradient mb-2">
-                Welcome to LeafLense
+                {t('welcome')} {t('appTitle')}
               </h1>
               <p className="text-lg text-gray-300">
-                Smart agriculture powered by artificial intelligence
+                {t('appSubtitle')}
               </p>
             </div>
           </div>
