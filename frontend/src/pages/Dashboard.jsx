@@ -17,6 +17,7 @@ import {
   CloudRain,
   Thermometer
 } from 'lucide-react'
+import SpotlightCard from './SpotlightCard'
 
 const featureCards = [
   {
@@ -25,7 +26,6 @@ const featureCards = [
     href: '/crop-yield',
     icon: Wheat,
     gradient: 'from-green-600 to-green-700',
-    bgGradient: 'from-green-600/10 to-green-700/5',
     stats: '94.2% accuracy'
   },
   {
@@ -34,7 +34,6 @@ const featureCards = [
     href: '/disease-detection',
     icon: Bug,
     gradient: 'from-red-500 to-red-600',
-    bgGradient: 'from-red-500/10 to-red-600/5',
     stats: '2.1M images analyzed'
   },
   {
@@ -43,7 +42,6 @@ const featureCards = [
     href: '/fertilizer',
     icon: Beaker,
     gradient: 'from-green-700 to-green-800',
-    bgGradient: 'from-green-700/10 to-green-800/5',
     stats: '500+ crop types'
   },
   {
@@ -52,7 +50,6 @@ const featureCards = [
     href: '/insights',
     icon: Lightbulb,
     gradient: 'from-green-500 to-green-600',
-    bgGradient: 'from-green-500/10 to-green-600/5',
     stats: 'Real-time analysis'
   },
   {
@@ -61,7 +58,6 @@ const featureCards = [
     href: '/chat',
     icon: MessageCircle,
     gradient: 'from-green-600 to-green-700',
-    bgGradient: 'from-green-600/10 to-green-700/5',
     stats: '24/7 available'
   }
 ]
@@ -74,16 +70,19 @@ const stats = [
 ]
 
 const weatherData = [
-  { label: '', value: '', icon: Thermometer, color: 'text-orange-400' },
-  { label: '', value: '', icon: CloudRain, color: 'text-blue-400' },
-  { label: '', value: '', icon: Sun, color: 'text-yellow-400' }
+  { label: 'Temperature', value: '24°C', icon: Thermometer, color: 'text-orange-400' },
+  { label: 'Humidity', value: '65%', icon: CloudRain, color: 'text-blue-400' },
+  { label: 'Sunlight', value: '8h', icon: Sun, color: 'text-yellow-400' }
 ]
 
 const Dashboard = () => {
   return (
     <div className="p-6 space-y-8">
       {/* Hero Section */}
-      <div className="relative overflow-hidden bg-gradient-to-br from-gray-800/50 via-gray-900/50 to-gray-800/50 backdrop-blur-sm rounded-3xl border border-gray-700/50 p-8">
+      <SpotlightCard 
+        className="relative overflow-hidden bg-[#161F31]"  
+        spotlightColor="rgba(0, 230, 0, 0.7)"
+      >
         {/* Background decoration */}
         <div className="absolute inset-0 opacity-10">
           <div className="absolute top-10 left-10 w-20 h-20 bg-green-400 rounded-full animate-float"></div>
@@ -97,7 +96,7 @@ const Dashboard = () => {
               <Leaf className="h-8 w-8 text-white" />
             </div>
             <div>
-              <h1 className="text-4xl font-bold text-gradient mb-2">
+              <h1 className="text-4xl font-bold text-white mb-2">
                 Welcome to LeafLense
               </h1>
               <p className="text-lg text-gray-300">
@@ -107,40 +106,53 @@ const Dashboard = () => {
           </div>
           
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-8">
-            <div className="bg-gray-800/30 backdrop-blur-sm rounded-2xl p-6 border border-gray-700/30">
+            <SpotlightCard 
+              className="p-6 bg-[#161F31]"  
+              spotlightColor="rgba(0, 230, 0, 0.7)"
+            >
               <div className="flex items-center justify-between mb-4">
                 <MapPin className="h-8 w-8 text-green-400" />
                 <span className="text-sm text-gray-400">Location</span>
               </div>
               <h3 className="text-xl font-bold text-white">Midwest Farm</h3>
               <p className="text-gray-300">Iowa, United States</p>
-            </div>
+            </SpotlightCard>
             
-            <div className="bg-gray-800/30 backdrop-blur-sm rounded-2xl p-6 border border-gray-700/30">
+            <SpotlightCard 
+              className="p-6 bg-[#161F31]"  
+              spotlightColor="rgba(0, 230, 0, 0.7)"
+            >
               <div className="flex items-center justify-between mb-4">
                 <Calendar className="h-8 w-8 text-green-400" />
                 <span className="text-sm text-gray-400">Season</span>
               </div>
               <h3 className="text-xl font-bold text-white">Growing Season</h3>
               <p className="text-gray-300">Day 145 of 180</p>
-            </div>
+            </SpotlightCard>
             
-            <div className="bg-gray-800/30 backdrop-blur-sm rounded-2xl p-6 border border-gray-700/30">
+            <SpotlightCard 
+              className="p-6 bg-[#161F31]"  
+              spotlightColor="rgba(0, 230, 0, 0.7)"
+            >
               <div className="flex items-center justify-between mb-4">
                 <TrendingUp className="h-8 w-8 text-green-400" />
                 <span className="text-sm text-gray-400">Performance</span>
               </div>
               <h3 className="text-xl font-bold text-white">Excellent</h3>
               <p className="text-gray-300">+15% vs last season</p>
-            </div>
+            </SpotlightCard>
           </div>
         </div>
-      </div>
+      </SpotlightCard>
 
       {/* Stats Section */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
         {stats.map((stat) => (
-          <div key={stat.name} className="bg-gray-800/40 backdrop-blur-sm rounded-2xl p-6 border border-gray-700/50 card-hover">
+          <SpotlightCard 
+            key={stat.name} 
+            className="p-6 bg-[#161F31]"  
+            spotlightColor="rgba(0, 230, 0, 0.7)"
+          >
             <div className="flex items-center justify-between mb-4">
               <div className="w-12 h-12 bg-gradient-to-br from-gray-700 to-gray-800 rounded-xl flex items-center justify-center">
                 <stat.icon className="h-6 w-6 text-green-400" />
@@ -151,28 +163,37 @@ const Dashboard = () => {
             </div>
             <h3 className="text-2xl font-bold text-white mb-1">{stat.value}</h3>
             <p className="text-gray-400 text-sm">{stat.name}</p>
-          </div>
+          </SpotlightCard>
         ))}
       </div>
 
       {/* Weather Widget */}
-      <div className="bg-gradient-to-br from-gray-900/20 to-gray-800/20 backdrop-blur-sm rounded-2xl p-6 border border-gray-700/30">
+      <SpotlightCard 
+        className="p-6 bg-[#161F31]"  
+        spotlightColor="rgba(0, 230, 0, 0.7)"
+      >
         <h2 className="text-xl font-bold text-white mb-4 flex items-center">
           <Sun className="h-6 w-6 mr-3 text-yellow-400" />
           Current Weather Conditions
         </h2>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           {weatherData.map((item) => (
-            <div key={item.label} className="flex items-center justify-between p-4 bg-gray-800/30 rounded-xl">
-              <div className="flex items-center space-x-3">
-                <item.icon className={`h-6 w-6 ${item.color}`} />
-                <span className="text-gray-300">{item.label}</span>
+            <SpotlightCard 
+              key={item.label} 
+              className="p-4 bg-[#161F31]"  
+              spotlightColor="rgba(0, 230, 0, 0.7)"
+            >
+              <div className="flex items-center justify-between">
+                <div className="flex items-center space-x-3">
+                  <item.icon className={`h-6 w-6 ${item.color}`} />
+                  <span className="text-gray-300">{item.label}</span>
+                </div>
+                <span className="text-xl font-bold text-white">{item.value}</span>
               </div>
-              <span className="text-xl font-bold text-white">{item.value}</span>
-            </div>
+            </SpotlightCard>
           ))}
         </div>
-      </div>
+      </SpotlightCard>
 
       {/* Feature Cards */}
       <div className="space-y-6">
@@ -186,86 +207,105 @@ const Dashboard = () => {
         
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
           {featureCards.map((feature) => (
-            <Link
-              key={feature.name}
-              to={feature.href}
-              className={`group relative overflow-hidden bg-gradient-to-br ${feature.bgGradient} backdrop-blur-sm rounded-2xl border border-gray-700/50 p-6 card-hover`}
-            >
-              {/* Background decoration */}
-              <div className="absolute top-0 right-0 w-32 h-32 opacity-10">
-                <feature.icon className="w-full h-full" />
-              </div>
-              
-              <div className="relative z-10">
-                <div className="flex items-center justify-between mb-4">
-                  <div className={`w-14 h-14 bg-gradient-to-br ${feature.gradient} rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform duration-200`}>
-                    <feature.icon className="h-7 w-7 text-white" />
-                  </div>
-                  <div className="flex items-center text-gray-400 group-hover:text-green-400 transition-colors">
-                    <span className="text-sm mr-2">Explore</span>
-                    <ArrowRight className="h-4 w-4 group-hover:translate-x-1 transition-transform" />
-                  </div>
+            <Link key={feature.name} to={feature.href}>
+              <SpotlightCard 
+                className="group relative overflow-hidden p-6 bg-[#161F31]"  
+                spotlightColor="rgba(0, 230, 0, 0.7)"
+              >
+                {/* Background decoration */}
+                <div className="absolute top-0 right-0 w-32 h-32 opacity-10">
+                  <feature.icon className="w-full h-full" />
                 </div>
                 
-                <h3 className="text-xl font-bold text-white mb-2 group-hover:text-green-100 transition-colors">
-                  {feature.name}
-                </h3>
-                <p className="text-gray-300 text-sm mb-4 leading-relaxed">
-                  {feature.description}
-                </p>
-                
-                <div className="flex items-center justify-between">
-                  <span className="text-xs text-gray-400 bg-gray-800/50 px-3 py-1 rounded-full">
-                    {feature.stats}
-                  </span>
-                  <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
+                <div className="relative z-10">
+                  <div className="flex items-center justify-between mb-4">
+                    <div className={`w-14 h-14 bg-gradient-to-br ${feature.gradient} rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform duration-200`}>
+                      <feature.icon className="h-7 w-7 text-white" />
+                    </div>
+                    <div className="flex items-center text-gray-400 group-hover:text-green-400 transition-colors">
+                      <span className="text-sm mr-2">Explore</span>
+                      <ArrowRight className="h-4 w-4 group-hover:translate-x-1 transition-transform" />
+                    </div>
+                  </div>
+                  
+                  <h3 className="text-xl font-bold text-white mb-2 group-hover:text-green-100 transition-colors">
+                    {feature.name}
+                  </h3>
+                  <p className="text-gray-300 text-sm mb-4 leading-relaxed">
+                    {feature.description}
+                  </p>
+                  
+                  <div className="flex items-center justify-between">
+                    <span className="text-xs text-gray-400 bg-gray-800/50 px-3 py-1 rounded-full">
+                      {feature.stats}
+                    </span>
+                    <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
+                  </div>
                 </div>
-              </div>
+              </SpotlightCard>
             </Link>
           ))}
         </div>
       </div>
 
       {/* Quick Actions */}
-      <div className="bg-gradient-to-r from-green-900/20 to-green-800/20 backdrop-blur-sm rounded-2xl p-6 border border-green-700/30">
+      <SpotlightCard 
+        className="p-6 bg-[#161F31]"  
+        spotlightColor="rgba(0, 230, 0, 0.7)"
+      >
         <h2 className="text-xl font-bold text-white mb-4 flex items-center">
           <Zap className="h-6 w-6 mr-3 text-green-400" />
           Quick Actions
         </h2>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          <Link to="/disease-detection" className="flex items-center space-x-3 p-4 bg-gray-800/30 rounded-xl hover:bg-gray-700/30 transition-colors group">
-            <div className="w-10 h-10 bg-red-500/20 rounded-lg flex items-center justify-center">
-              <Bug className="h-5 w-5 text-red-400" />
-            </div>
-            <div>
-              <h4 className="font-medium text-white group-hover:text-green-100">Quick Diagnosis</h4>
-              <p className="text-xs text-gray-400">Upload leaf image</p>
-            </div>
+          <Link to="/disease-detection">
+            <SpotlightCard 
+              className="flex items-center space-x-3 p-4 group bg-[#161F31]"  
+              spotlightColor="rgba(0, 230, 0, 0.7)"
+            >
+              <div className="w-10 h-10 bg-red-500/20 rounded-lg flex items-center justify-center">
+                <Bug className="h-5 w-5 text-red-400" />
+              </div>
+              <div>
+                <h4 className="font-medium text-white group-hover:text-green-100">Quick Diagnosis</h4>
+                <p className="text-xs text-gray-400">Upload leaf image</p>
+              </div>
+            </SpotlightCard>
           </Link>
           
-          <Link to="/chat" className="flex items-center space-x-3 p-4 bg-gray-800/30 rounded-xl hover:bg-gray-700/30 transition-colors group">
-            <div className="w-10 h-10 bg-green-500/20 rounded-lg flex items-center justify-center">
-              <MessageCircle className="h-5 w-5 text-green-400" />
-            </div>
-            <div>
-              <h4 className="font-medium text-white group-hover:text-green-100">Ask AI Assistant</h4>
-              <p className="text-xs text-gray-400">Get instant help</p>
-            </div>
+          <Link to="/chat">
+            <SpotlightCard 
+              className="flex items-center space-x-3 p-4 group bg-[#161F31]"  
+              spotlightColor="rgba(0, 230, 0, 0.7)"
+            >
+              <div className="w-10 h-10 bg-green-500/20 rounded-lg flex items-center justify-center">
+                <MessageCircle className="h-5 w-5 text-green-400" />
+              </div>
+              <div>
+                <h4 className="font-medium text-white group-hover:text-green-100">Ask AI Assistant</h4>
+                <p className="text-xs text-gray-400">Get instant help</p>
+              </div>
+            </SpotlightCard>
           </Link>
           
-          <Link to="/insights" className="flex items-center space-x-3 p-4 bg-gray-800/30 rounded-xl hover:bg-gray-700/30 transition-colors group">
-            <div className="w-10 h-10 bg-green-600/20 rounded-lg flex items-center justify-center">
-              <Lightbulb className="h-5 w-5 text-green-400" />
-            </div>
-            <div>
-              <h4 className="font-medium text-white group-hover:text-green-100">View Insights</h4>
-              <p className="text-xs text-gray-400">AI recommendations</p>
-            </div>
+          <Link to="/insights">
+            <SpotlightCard 
+              className="flex items-center space-x-3 p-4 group bg-[#161F31]"  
+              spotlightColor="rgba(0, 230, 0, 0.7)"
+            >
+              <div className="w-10 h-10 bg-green-600/20 rounded-lg flex items-center justify-center">
+                <Lightbulb className="h-5 w-5 text-green-400" />
+              </div>
+              <div>
+                <h4 className="font-medium text-white group-hover:text-green-100">View Insights</h4>
+                <p className="text-xs text-gray-400">AI recommendations</p>
+              </div>
+            </SpotlightCard>
           </Link>
         </div>
-      </div>
+      </SpotlightCard>
     </div>
   )
 }
 
-export default Dashboard
+export default Dashboard  

@@ -23,10 +23,59 @@ import {
   Menu,
   X
 } from 'lucide-react'
-import { useNavigate } from 'react-router-dom'
+
+// SpotlightCard Component
+const SpotlightCard = ({ children, className = "", spotlightColor = "rgba(0, 230, 0, 0.7)" }) => {
+  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
+  const [isHovered, setIsHovered] = useState(false);
+
+  const handleMouseMove = (e) => {
+    const rect = e.currentTarget.getBoundingClientRect();
+    setMousePosition({
+      x: e.clientX - rect.left,
+      y: e.clientY - rect.top,
+    });
+  };
+
+  return (
+    <div
+      className={`relative overflow-hidden rounded-3xl transition-all duration-500 ${className}`}
+      onMouseMove={handleMouseMove}
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
+    >
+      {isHovered && (
+        <div
+          className="absolute pointer-events-none transition-opacity duration-500"
+          style={{
+            left: mousePosition.x - 200,
+            top: mousePosition.y - 200,
+            width:'400px',
+            height:'400px',
+            background: `radial-gradient(circle, ${spotlightColor} 0%, transparent 70%)`,
+            borderRadius: '100%',
+            filter: 'blur(100px)',
+            opacity: 0.8,
+          }}
+        />
+      )}
+      <div className="relative z-10">{children}</div>
+    </div>
+  );
+};
+
+// Simple Prism Component (placeholder)
+const Prism = ({ animationType, timeScale, height, baseWidth, scale, hueShift, colorFrequency, noise, glow }) => {
+  return (
+    <div className="absolute inset-0 overflow-hidden">
+      <div className="absolute inset-0 bg-gradient-to-br from-green-500/20 via-blue-500/20 to-purple-500/20 animate-pulse" />
+      <div className="absolute top-1/4 left-1/4 w-64 h-64 bg-gradient-to-r from-green-400/30 to-blue-400/30 rounded-full animate-spin" style={{ animationDuration: '20s' }} />
+      <div className="absolute bottom-1/4 right-1/4 w-48 h-48 bg-gradient-to-r from-purple-400/30 to-pink-400/30 rounded-full animate-pulse" style={{ animationDelay: '10s' }} />
+    </div>
+  );
+};
 
 const LandingPage = () => {
-    const navigate = useNavigate()
   const [isMenuOpen, setIsMenuOpen] = useState(false)
   const [scrolled, setScrolled] = useState(false)
 
@@ -37,6 +86,10 @@ const LandingPage = () => {
     window.addEventListener('scroll', handleScroll)
     return () => window.removeEventListener('scroll', handleScroll)
   }, [])
+
+  const handleGetStarted = () => {
+    alert('Navigate to sign in page')
+  }
 
   const features = [
     {
@@ -124,7 +177,7 @@ const LandingPage = () => {
               <a href="#about" className="text-slate-300 hover:text-green-400 transition-colors">About</a>
               <a href="#testimonials" className="text-slate-300 hover:text-green-400 transition-colors">Testimonials</a>
               <a href="#pricing" className="text-slate-300 hover:text-green-400 transition-colors">Pricing</a>
-              <button onClick={()=>navigate('/signin')} className="bg-gradient-to-r from-green-500 to-emerald-600 text-white px-6 py-2 rounded-xl hover:shadow-lg hover:shadow-green-500/25 transition-all">
+              <button onClick={handleGetStarted} className="bg-gradient-to-r from-green-500 to-emerald-600 text-white px-6 py-2 rounded-xl hover:shadow-lg hover:shadow-green-500/25 transition-all">
                 Get Started
               </button>
             </div>
@@ -145,7 +198,7 @@ const LandingPage = () => {
                 <a href="#about" className="block text-slate-300 hover:text-green-400">About</a>
                 <a href="#testimonials" className="block text-slate-300 hover:text-green-400">Testimonials</a>
                 <a href="#pricing" className="block text-slate-300 hover:text-green-400">Pricing</a>
-                <button className="w-full bg-gradient-to-r from-green-500 to-emerald-600 text-white py-2 rounded-xl">
+                <button onClick={handleGetStarted} className="w-full bg-gradient-to-r from-green-500 to-emerald-600 text-white py-2 rounded-xl">
                   Get Started
                 </button>
               </div>
@@ -156,6 +209,21 @@ const LandingPage = () => {
 
       {/* Hero Section */}
       <section className="relative overflow-hidden pt-32 pb-20 px-6">
+        {/* Prism Background */}
+        <div className="absolute inset-0 overflow-hidden opacity-30">
+          <Prism
+            animationType="rotate"
+            timeScale={1.0}
+            height={3.5}
+            baseWidth={5.5}
+            scale={3.6}
+            hueShift={1.26}
+            colorFrequency={1}
+            noise={0}
+            glow={1}
+          />
+        </div>
+        
         {/* Background Elements */}
         <div className="absolute inset-0 opacity-20">
           <div className="absolute top-20 left-10 w-32 h-32 bg-green-400 rounded-full animate-pulse"></div>
@@ -164,10 +232,12 @@ const LandingPage = () => {
         </div>
         
         <div className="max-w-7xl mx-auto text-center relative z-10">
-          <div className="inline-flex items-center bg-green-500/10 border border-green-500/20 rounded-full px-6 py-2 mb-8">
-            <Brain className="h-4 w-4 text-green-400 mr-2 animate-pulse" />
-            <span className="text-green-400 text-sm font-medium">Powered by Advanced AI</span>
-          </div>
+          <SpotlightCard className="bg-[#161F31] border border-slate-700/50 p-8 mb-8 inline-block" spotlightColor="rgba(0, 230, 0, 0.7)">
+            <div className="inline-flex items-center bg-green-500/10 border border-green-500/20 rounded-full px-6 py-2">
+              <Brain className="h-4 w-4 text-green-400 mr-2 animate-pulse" />
+              <span className="text-green-400 text-sm font-medium">Powered by Advanced AI</span>
+            </div>
+          </SpotlightCard>
           
           <h1 className="text-6xl md:text-7xl font-bold text-white mb-8 leading-tight">
             Smart Farming with
@@ -182,7 +252,7 @@ const LandingPage = () => {
           </p>
           
           <div className="flex flex-col sm:flex-row items-center justify-center space-y-4 sm:space-y-0 sm:space-x-6 mb-16">
-            <button onClick={()=>navigate('/signin')} className="bg-gradient-to-r from-green-500 to-emerald-600 text-white px-8 py-4 rounded-2xl text-lg font-semibold hover:shadow-xl hover:shadow-green-500/25 transform hover:-translate-y-1 transition-all duration-300 flex items-center">
+            <button onClick={handleGetStarted} className="bg-gradient-to-r from-green-500 to-emerald-600 text-white px-8 py-4 rounded-2xl text-lg font-semibold hover:shadow-xl hover:shadow-green-500/25 transform hover:-translate-y-1 transition-all duration-300 flex items-center">
               Start Free Trial
               <ArrowRight className="ml-2 h-5 w-5" />
             </button>
@@ -196,13 +266,15 @@ const LandingPage = () => {
           {/* Stats */}
           <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
             {stats.map((stat, index) => (
-              <div key={stat.label} className="text-center">
-                <div className={`w-16 h-16 bg-gradient-to-br from-slate-700 to-slate-800 rounded-2xl flex items-center justify-center mx-auto mb-4 animate-pulse`} style={{ animationDelay: `${index * 0.2}s` }}>
-                  <stat.icon className="h-8 w-8 text-green-400" />
+              <SpotlightCard key={stat.label} className="bg-[#161F31] border border-slate-700/50 p-6" spotlightColor="rgba(0, 230, 0, 0.7)">
+                <div className="text-center">
+                  <div className={`w-16 h-16 bg-gradient-to-br from-slate-700 to-slate-800 rounded-2xl flex items-center justify-center mx-auto mb-4 animate-pulse`} style={{ animationDelay: `${index * 0.2}s` }}>
+                    <stat.icon className="h-8 w-8 text-green-400" />
+                  </div>
+                  <div className="text-3xl font-bold text-white mb-2">{stat.value}</div>
+                  <div className="text-slate-400 text-sm">{stat.label}</div>
                 </div>
-                <div className="text-3xl font-bold text-white mb-2">{stat.value}</div>
-                <div className="text-slate-400 text-sm">{stat.label}</div>
-              </div>
+              </SpotlightCard>
             ))}
           </div>
         </div>
@@ -228,10 +300,10 @@ const LandingPage = () => {
           
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
             {features.map((feature, index) => (
-              <div 
+              <SpotlightCard 
                 key={feature.name} 
-                className={`group relative overflow-hidden bg-gradient-to-br ${feature.bgGradient} backdrop-blur-sm rounded-3xl border border-slate-700/50 p-8 hover:transform hover:-translate-y-2 transition-all duration-500`}
-                style={{ animationDelay: `${index * 0.1}s` }}
+                className="bg-[#161F31] border border-slate-700/50 p-8 group hover:transform hover:-translate-y-2 transition-all duration-500"
+                spotlightColor="rgba(0, 230, 0, 0.7)"
               >
                 {/* Background decoration */}
                 <div className="absolute top-0 right-0 w-40 h-40 opacity-5">
@@ -256,7 +328,7 @@ const LandingPage = () => {
                     <ArrowRight className="ml-2 h-4 w-4 group-hover:translate-x-2 transition-transform" />
                   </div>
                 </div>
-              </div>
+              </SpotlightCard>
             ))}
           </div>
         </div>
@@ -286,13 +358,13 @@ const LandingPage = () => {
                 ))}
               </div>
               
-              <button className="mt-8 bg-gradient-to-r from-green-500 to-emerald-600 text-white px-8 py-4 rounded-2xl text-lg font-semibold hover:shadow-xl hover:shadow-green-500/25 transform hover:-translate-y-1 transition-all duration-300">
+              <button onClick={handleGetStarted} className="mt-8 bg-gradient-to-r from-green-500 to-emerald-600 text-white px-8 py-4 rounded-2xl text-lg font-semibold hover:shadow-xl hover:shadow-green-500/25 transform hover:-translate-y-1 transition-all duration-300">
                 Start Your Free Trial
               </button>
             </div>
             
             <div className="relative">
-              <div className="bg-slate-800/50 backdrop-blur-sm rounded-3xl p-8 border border-slate-700/50">
+              <SpotlightCard className="bg-[#161F31] border border-slate-700/50 p-8" spotlightColor="rgba(0, 230, 0, 0.7)">
                 <div className="text-center mb-8">
                   <div className="w-20 h-20 bg-gradient-to-br from-green-500 to-emerald-600 rounded-2xl flex items-center justify-center mx-auto mb-4">
                     <TrendingUp className="h-10 w-10 text-white" />
@@ -315,7 +387,7 @@ const LandingPage = () => {
                     <span className="text-2xl font-bold text-purple-400">89%</span>
                   </div>
                 </div>
-              </div>
+              </SpotlightCard>
             </div>
           </div>
         </div>
@@ -335,7 +407,7 @@ const LandingPage = () => {
           
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             {testimonials.map((testimonial, index) => (
-              <div key={testimonial.name} className="bg-slate-800/50 backdrop-blur-sm rounded-2xl p-8 border border-slate-700/50 hover:transform hover:-translate-y-2 transition-all duration-300">
+              <SpotlightCard key={testimonial.name} className="bg-[#161F31] border border-slate-700/50 p-8 hover:transform hover:-translate-y-2 transition-all duration-300" spotlightColor="rgba(0, 230, 0, 0.7)">
                 <div className="flex items-center mb-4">
                   {[...Array(testimonial.rating)].map((_, i) => (
                     <Star key={i} className="h-5 w-5 text-yellow-400 fill-current" />
@@ -350,7 +422,7 @@ const LandingPage = () => {
                   <h4 className="text-white font-semibold">{testimonial.name}</h4>
                   <p className="text-slate-400 text-sm">{testimonial.role}</p>
                 </div>
-              </div>
+              </SpotlightCard>
             ))}
           </div>
         </div>
@@ -359,7 +431,7 @@ const LandingPage = () => {
       {/* CTA Section */}
       <section className="py-20 px-6 bg-gradient-to-br from-green-900/20 to-emerald-900/20">
         <div className="max-w-4xl mx-auto text-center">
-          <div className="bg-slate-800/50 backdrop-blur-sm rounded-3xl p-12 border border-slate-700/50">
+          <SpotlightCard className="bg-[#161F31] border border-slate-700/50 p-12" spotlightColor="rgba(0, 230, 0, 0.7)">
             <div className="w-20 h-20 bg-gradient-to-br from-green-500 to-emerald-600 rounded-2xl flex items-center justify-center mx-auto mb-8">
               <Zap className="h-10 w-10 text-white" />
             </div>
@@ -374,7 +446,7 @@ const LandingPage = () => {
             </p>
             
             <div className="flex flex-col sm:flex-row items-center justify-center space-y-4 sm:space-y-0 sm:space-x-6">
-              <button onClick={()=>navigate('/signin')} className="bg-gradient-to-r from-green-500 to-emerald-600 text-white px-8 py-4 rounded-2xl text-lg font-semibold hover:shadow-xl hover:shadow-green-500/25 transform hover:-translate-y-1 transition-all duration-300 flex items-center">
+              <button onClick={handleGetStarted} className="bg-gradient-to-r from-green-500 to-emerald-600 text-white px-8 py-4 rounded-2xl text-lg font-semibold hover:shadow-xl hover:shadow-green-500/25 transform hover:-translate-y-1 transition-all duration-300 flex items-center">
                 Start Free Trial
                 <ArrowRight className="ml-2 h-5 w-5" />
               </button>
@@ -384,7 +456,7 @@ const LandingPage = () => {
                 No credit card required
               </button>
             </div>
-          </div>
+          </SpotlightCard>
         </div>
       </section>
 
