@@ -1,5 +1,4 @@
 import { Lightbulb, TrendingUp, AlertTriangle, CheckCircle, Brain, Calendar, Target } from 'lucide-react'
-import SpotlightCard from './SpotlightCard'
 
 const Insights = () => {
   const insights = [
@@ -48,6 +47,15 @@ const Insights = () => {
     { title: 'Harvest timing optimization needed', category: 'Planning', priority: 'Medium' }
   ]
 
+  const getInsightColor = (type) => {
+    switch (type) {
+      case 'warning': return 'from-yellow-500/20 to-yellow-600/10 border-yellow-500/30'
+      case 'success': return 'from-green-500/20 to-green-600/10 border-green-500/30'
+      case 'info': return 'from-gray-500/20 to-gray-600/10 border-gray-500/30'
+      default: return 'from-gray-500/20 to-gray-600/10 border-gray-500/30'
+    }
+  }
+
   const getPriorityColor = (priority) => {
     switch (priority) {
       case 'High': return 'text-red-400 bg-red-500/20'
@@ -82,22 +90,21 @@ const Insights = () => {
         
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
           {insights.map((insight) => (
-            <SpotlightCard 
+            <div 
               key={insight.id}
-              className="p-6 bg-[#161F31]"  
-              spotlightColor="rgba(0, 230, 0, 0.7)"
+              className={`bg-gradient-to-br backdrop-blur-sm rounded-2xl p-6 border ${getInsightColor(insight.type)}`}
             >
               <div className="flex items-start justify-between mb-4">
                 <div className="flex items-center space-x-3">
                   <div className={`w-10 h-10 rounded-lg flex items-center justify-center ${
                     insight.color === 'yellow' ? 'bg-yellow-500/20' :
                     insight.color === 'green' ? 'bg-green-500/20' :
-                    'bg-gray-500/20'
+                    insight.color === 'blue' ? 'bg-gray-500/20' : 'bg-gray-500/20'
                   }`}>
                     <insight.icon className={`h-5 w-5 ${
                       insight.color === 'yellow' ? 'text-yellow-400' :
                       insight.color === 'green' ? 'text-green-400' :
-                      'text-gray-400'
+                      insight.color === 'blue' ? 'text-gray-400' : 'text-gray-400'
                     }`} />
                   </div>
                   <div>
@@ -126,25 +133,18 @@ const Insights = () => {
                 </div>
                 <TrendingUp className="h-5 w-5 text-gray-400" />
               </div>
-            </SpotlightCard>
+            </div>
           ))}
         </div>
       </div>
 
       {/* Recommendations */}
-      <SpotlightCard 
-        className="p-6 bg-[#161F31]"  
-        spotlightColor="rgba(0, 230, 0, 0.7)"
-      >
+      <div className="bg-gray-800/40 backdrop-blur-sm rounded-2xl p-6 border border-gray-700/50">
         <h2 className="text-xl font-bold text-white mb-6">Action Recommendations</h2>
         
         <div className="space-y-4">
           {recommendations.map((rec, index) => (
-            <SpotlightCard 
-              key={index} 
-              className="flex items-center justify-between p-4 bg-[#161F31]"  
-              spotlightColor="rgba(0, 230, 0, 0.7)"
-            >
+            <div key={index} className="flex items-center justify-between p-4 bg-gray-700/30 rounded-lg hover:bg-gray-600/30 transition-colors">
               <div className="flex items-center space-x-4">
                 <div className="w-8 h-8 bg-green-500/20 rounded-lg flex items-center justify-center">
                   <span className="text-green-400 text-sm font-bold">{index + 1}</span>
@@ -157,48 +157,39 @@ const Insights = () => {
               <span className={`text-xs px-3 py-1 rounded-full ${getPriorityColor(rec.priority)}`}>
                 {rec.priority}
               </span>
-            </SpotlightCard>
+            </div>
           ))}
         </div>
-      </SpotlightCard>
+      </div>
 
       {/* Performance Summary */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <SpotlightCard 
-          className="p-6 bg-[#161F31]"  
-          spotlightColor="rgba(0, 230, 0, 0.7)"
-        >
+        <div className="bg-gray-800/40 backdrop-blur-sm rounded-2xl p-6 border border-gray-700/50">
           <div className="flex items-center justify-between mb-4">
             <TrendingUp className="h-8 w-8 text-green-400" />
             <span className="text-2xl font-bold text-green-400">+15%</span>
           </div>
           <h3 className="font-bold text-white mb-2">Yield Improvement</h3>
           <p className="text-gray-400 text-sm">Expected increase vs last season</p>
-        </SpotlightCard>
+        </div>
         
-        <SpotlightCard 
-          className="p-6 bg-[#161F31]"  
-          spotlightColor="rgba(0, 230, 0, 0.7)"
-        >
+        <div className="bg-gray-800/40 backdrop-blur-sm rounded-2xl p-6 border border-gray-700/50">
           <div className="flex items-center justify-between mb-4">
             <Target className="h-8 w-8 text-green-400" />
             <span className="text-2xl font-bold text-green-400">94%</span>
           </div>
           <h3 className="font-bold text-white mb-2">AI Accuracy</h3>
           <p className="text-gray-400 text-sm">Prediction confidence level</p>
-        </SpotlightCard>
+        </div>
         
-        <SpotlightCard 
-          className="p-6 bg-[#161F31]"  
-          spotlightColor="rgba(0, 230, 0, 0.7)"
-        >
+        <div className="bg-gray-800/40 backdrop-blur-sm rounded-2xl p-6 border border-gray-700/50">
           <div className="flex items-center justify-between mb-4">
             <CheckCircle className="h-8 w-8 text-green-400" />
             <span className="text-2xl font-bold text-green-400">12</span>
           </div>
           <h3 className="font-bold text-white mb-2">Active Insights</h3>
           <p className="text-gray-400 text-sm">Real-time recommendations</p>
-        </SpotlightCard>
+        </div>
       </div>
     </div>
   )
