@@ -593,12 +593,12 @@ const MandiPrices = () => {
   }, []);
 
   return (
-    <div className="mandi-prices-container">
+    <div className="mandi-prices-container" style={{ backgroundColor: '#172134' }}>
       {/* Header */}
-      <div className="mandi-header">
+      <div className="mandi-header" style={{ backgroundColor: '#172134' }}>
         <div className="header-content">
           <h1 className="mandi-title">
-            <Store className="title-icon" />
+            <Store className="title-icon" style={{ color: '#19b761' }} />
             Mandi Prices
           </h1>
           <p className="mandi-subtitle">Real-time vegetable prices from nearest mandis</p>
@@ -608,6 +608,7 @@ const MandiPrices = () => {
           className="location-btn"
           onClick={getCurrentLocation}
           disabled={locationLoading}
+          style={{ backgroundColor: '#19b761' }}
         >
           {locationLoading ? (
             <Loader className="btn-icon spinning" />
@@ -620,21 +621,21 @@ const MandiPrices = () => {
 
       {/* Error Display */}
       {error && (
-        <div className="error-banner">
-          <AlertCircle className="error-icon" />
+        <div className="error-banner" style={{ backgroundColor: '#1a2435' }}>
+          <AlertCircle className="error-icon" style={{ color: '#19b761' }} />
           {error}
         </div>
       )}
 
       <div className="mandi-content">
         {/* Left Sidebar - Mandis List */}
-        <div className="mandis-sidebar">
+        <div className="mandis-sidebar" style={{ backgroundColor: '#1a2435' }}>
           <div className="sidebar-header">
             <h3>Nearest Mandis</h3>
             {userLocation && (
               <div className="location-display">
                 <div className="location-info">
-                  <MapPin className="location-icon" />
+                  <MapPin className="location-icon" style={{ color: '#19b761' }} />
                   <span>Your Location:</span>
                 </div>
                 {userLocationName ? (
@@ -660,7 +661,7 @@ const MandiPrices = () => {
           <div className="mandis-list">
             {loading && nearestMandis.length === 0 ? (
               <div className="loading-mandis">
-                <Loader className="spinner" />
+                <Loader className="spinner" style={{ color: '#19b761' }} />
                 <p>Finding nearest mandis...</p>
               </div>
             ) : (
@@ -669,12 +670,16 @@ const MandiPrices = () => {
                   key={index}
                   className={`mandi-card ${selectedMandi?.name === mandi.name ? 'selected' : ''}`}
                   onClick={() => handleMandiSelect(mandi)}
+                  style={{ 
+                    backgroundColor: selectedMandi?.name === mandi.name ? '#19b761' : '#1a2435',
+                    borderColor: '#19b761'
+                  }}
                 >
                   <div className="mandi-info">
                     <h4>{mandi.name}</h4>
                     <p className="mandi-state">{mandi.state}</p>
                     <p className="mandi-distance">
-                      <MapPin className="distance-icon" />
+                      <MapPin className="distance-icon" style={{ color: '#19b761' }} />
                       {mandi.distance_km} km away
                     </p>
                   </div>
@@ -685,7 +690,7 @@ const MandiPrices = () => {
         </div>
 
         {/* Main Content - Prices */}
-        <div className="prices-main">
+        <div className="prices-main" style={{ backgroundColor: '#1a2435' }}>
           {selectedMandi && (
             <div className="prices-header">
               <div className="selected-mandi-info">
@@ -698,6 +703,7 @@ const MandiPrices = () => {
                   className="refresh-btn"
                   onClick={refreshPrices}
                   disabled={refreshing}
+                  style={{ backgroundColor: '#19b761' }}
                 >
                   <RotateCcw className={`btn-icon ${refreshing ? 'spinning' : ''}`} />
                   Refresh
@@ -707,23 +713,25 @@ const MandiPrices = () => {
           )}
 
           {/* Filters and Controls */}
-          <div className="controls-section">
+          <div className="controls-section" style={{ backgroundColor: '#1a2435' }}>
             {/* Search and Filter Controls */}
             <div className="search-filter-row">
               <div className="search-container">
-                <Search className="search-icon" />
+                <Search className="search-icon" style={{ color: '#19b761' }} />
                 <input
                   type="text"
                   placeholder="Search vegetables..."
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
                   className="search-input"
+                  style={{ backgroundColor: '#172134', borderColor: '#19b761' }}
                 />
               </div>
               
               <button 
                 className="filter-toggle-btn"
                 onClick={() => setShowFilters(!showFilters)}
+                style={{ backgroundColor: '#19b761' }}
               >
                 <Filter className="btn-icon" />
                 Filters
@@ -733,7 +741,7 @@ const MandiPrices = () => {
 
             {/* Expandable Filters */}
             {showFilters && (
-              <div className="filters-panel">
+              <div className="filters-panel" style={{ backgroundColor: '#172134', borderColor: '#19b761' }}>
                 <div className="filter-row">
                   <div className="filter-group">
                     <label>State:</label>
@@ -741,6 +749,7 @@ const MandiPrices = () => {
                       value={selectedState} 
                       onChange={(e) => handleStateSelection(e.target.value)}
                       className="filter-select"
+                      style={{ backgroundColor: '#1a2435', borderColor: '#19b761' }}
                     >
                       <option value="">Select State</option>
                       {availableStates.map(state => (
@@ -756,6 +765,7 @@ const MandiPrices = () => {
                       onChange={(e) => handleMarketSelection(e.target.value)}
                       className="filter-select"
                       disabled={!selectedState}
+                      style={{ backgroundColor: '#1a2435', borderColor: '#19b761' }}
                     >
                       <option value="">Select Market</option>
                       {availableMarkets.map(market => (
@@ -769,6 +779,7 @@ const MandiPrices = () => {
                       className="kerala-btn"
                       onClick={fetchKeralaData}
                       disabled={loading}
+                      style={{ backgroundColor: '#19b761' }}
                     >
                       <Globe className="btn-icon" />
                       Kerala Overview
@@ -782,7 +793,9 @@ const MandiPrices = () => {
             <div className="data-source-status">
               <div className="status-item">
                 <div className={`status-indicator ${dataSource.includes('realtime') ? 'realtime' : 
-                  dataSource.includes('cache') ? 'cached' : 'mock'}`}>
+                  dataSource.includes('cache') ? 'cached' : 'mock'}`}
+                  style={{ backgroundColor: '#19b761' }}
+                >
                   {dataSource.includes('realtime') ? (
                     <Zap className="status-icon" />
                   ) : dataSource.includes('cache') ? (
@@ -800,7 +813,7 @@ const MandiPrices = () => {
               
               {lastUpdated && (
                 <div className="last-updated">
-                  <Clock className="clock-icon" />
+                  <Clock className="clock-icon" style={{ color: '#19b761' }} />
                   <span>Updated: {new Date(lastUpdated).toLocaleTimeString()}</span>
                 </div>
               )}
@@ -810,7 +823,7 @@ const MandiPrices = () => {
           {/* Prices Grid */}
           {loading ? (
             <div className="loading-prices">
-              <Loader className="spinner" />
+              <Loader className="spinner" style={{ color: '#19b761' }} />
               <p>Scraping latest prices from Agmarknet...</p>
               <div className="scraping-steps">
                 <div className="step">🔄 Connecting to mandi database</div>
@@ -827,10 +840,10 @@ const MandiPrices = () => {
                 const modalPrice = parseFloat(item["Model Prize"]) || 0;
                 
                 return (
-                  <div key={index} className="price-card">
+                  <div key={index} className="price-card" style={{ backgroundColor: '#1a2435', borderColor: '#19b761' }}>
                     <div className="card-header">
                       <h4 className="vegetable-name">{item.Commodity}</h4>
-                      <div className={`trend-indicator ${trend}`}>
+                      <div className={`trend-indicator ${trend}`} style={{ color: '#19b761' }}>
                         {trend === 'high' ? (
                           <TrendingUp className="trend-icon" />
                         ) : (
@@ -842,21 +855,21 @@ const MandiPrices = () => {
                     <div className="price-info">
                       <div className="price-row">
                         <span className="price-label">Min Price:</span>
-                        <span className="price-value min">{formatPrice(item["Min Prize"])}</span>
+                        <span className="price-value min" style={{ color: '#19b761' }}>{formatPrice(item["Min Prize"])}</span>
                       </div>
                       <div className="price-row">
                         <span className="price-label">Max Price:</span>
-                        <span className="price-value max">{formatPrice(item["Max Prize"])}</span>
+                        <span className="price-value max" style={{ color: '#19b761' }}>{formatPrice(item["Max Prize"])}</span>
                       </div>
                       <div className="price-row main">
                         <span className="price-label">Modal Price:</span>
-                        <span className="price-value modal">{formatPrice(item["Model Prize"])}</span>
+                        <span className="price-value modal" style={{ color: '#19b761' }}>{formatPrice(item["Model Prize"])}</span>
                       </div>
                     </div>
                     
                     <div className="card-footer">
                       <div className="date-info">
-                        <Calendar className="date-icon" />
+                        <Calendar className="date-icon" style={{ color: '#19b761' }} />
                         {item.Date || 'Recent'}
                       </div>
                       <div className="market-info">
@@ -869,7 +882,7 @@ const MandiPrices = () => {
             </div>
           ) : (
             <div className="no-data">
-              <Store className="no-data-icon" />
+              <Store className="no-data-icon" style={{ color: '#19b761' }} />
               <h3>No Price Data Available</h3>
               <p>
                 {selectedMandi 

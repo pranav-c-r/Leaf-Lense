@@ -24,9 +24,11 @@ import {
   X
 } from 'lucide-react'
 import { useNavigate } from 'react-router-dom'
+import { useLanguage } from '../contexts/LanguageContext'
 
 const LandingPage = () => {
-    const navigate = useNavigate()
+  const { t } = useLanguage()
+  const navigate = useNavigate()
   const [isMenuOpen, setIsMenuOpen] = useState(false)
   const [scrolled, setScrolled] = useState(false)
 
@@ -37,6 +39,10 @@ const LandingPage = () => {
     window.addEventListener('scroll', handleScroll)
     return () => window.removeEventListener('scroll', handleScroll)
   }, [])
+
+  const handleGetStarted = () => {
+    navigate('/signin')
+  }
 
   const features = [
     {
@@ -116,7 +122,7 @@ const LandingPage = () => {
               <div className="w-10 h-10 bg-gradient-to-br from-green-500 to-emerald-600 rounded-xl flex items-center justify-center">
                 <Leaf className="h-6 w-6 text-white" />
               </div>
-              <span className="text-2xl font-bold text-white">LeafLense</span>
+              <span className="text-2xl font-bold text-white">{t('appTitle')}</span>
             </div>
             
             <div className="hidden md:flex items-center space-x-8">
@@ -124,7 +130,7 @@ const LandingPage = () => {
               <a href="#about" className="text-slate-300 hover:text-green-400 transition-colors">About</a>
               <a href="#testimonials" className="text-slate-300 hover:text-green-400 transition-colors">Testimonials</a>
               <a href="#pricing" className="text-slate-300 hover:text-green-400 transition-colors">Pricing</a>
-              <button onClick={()=>navigate('/signin')} className="bg-gradient-to-r from-green-500 to-emerald-600 text-white px-6 py-2 rounded-xl hover:shadow-lg hover:shadow-green-500/25 transition-all">
+              <button onClick={handleGetStarted} className="bg-gradient-to-r from-green-500 to-emerald-600 text-white px-6 py-2 rounded-xl hover:shadow-lg hover:shadow-green-500/25 transition-all">
                 Get Started
               </button>
             </div>
@@ -145,7 +151,7 @@ const LandingPage = () => {
                 <a href="#about" className="block text-slate-300 hover:text-green-400">About</a>
                 <a href="#testimonials" className="block text-slate-300 hover:text-green-400">Testimonials</a>
                 <a href="#pricing" className="block text-slate-300 hover:text-green-400">Pricing</a>
-                <button className="w-full bg-gradient-to-r from-green-500 to-emerald-600 text-white py-2 rounded-xl">
+                <button onClick={handleGetStarted} className="w-full bg-gradient-to-r from-green-500 to-emerald-600 text-white py-2 rounded-xl">
                   Get Started
                 </button>
               </div>
@@ -182,7 +188,7 @@ const LandingPage = () => {
           </p>
           
           <div className="flex flex-col sm:flex-row items-center justify-center space-y-4 sm:space-y-0 sm:space-x-6 mb-16">
-            <button onClick={()=>navigate('/signin')} className="bg-gradient-to-r from-green-500 to-emerald-600 text-white px-8 py-4 rounded-2xl text-lg font-semibold hover:shadow-xl hover:shadow-green-500/25 transform hover:-translate-y-1 transition-all duration-300 flex items-center">
+            <button onClick={handleGetStarted} className="bg-gradient-to-r from-green-500 to-emerald-600 text-white px-8 py-4 rounded-2xl text-lg font-semibold hover:shadow-xl hover:shadow-green-500/25 transform hover:-translate-y-1 transition-all duration-300 flex items-center">
               Start Free Trial
               <ArrowRight className="ml-2 h-5 w-5" />
             </button>
@@ -286,7 +292,7 @@ const LandingPage = () => {
                 ))}
               </div>
               
-              <button className="mt-8 bg-gradient-to-r from-green-500 to-emerald-600 text-white px-8 py-4 rounded-2xl text-lg font-semibold hover:shadow-xl hover:shadow-green-500/25 transform hover:-translate-y-1 transition-all duration-300">
+              <button onClick={handleGetStarted} className="mt-8 bg-gradient-to-r from-green-500 to-emerald-600 text-white px-8 py-4 rounded-2xl text-lg font-semibold hover:shadow-xl hover:shadow-green-500/25 transform hover:-translate-y-1 transition-all duration-300">
                 Start Your Free Trial
               </button>
             </div>
@@ -374,7 +380,7 @@ const LandingPage = () => {
             </p>
             
             <div className="flex flex-col sm:flex-row items-center justify-center space-y-4 sm:space-y-0 sm:space-x-6">
-              <button onClick={()=>navigate('/signin')} className="bg-gradient-to-r from-green-500 to-emerald-600 text-white px-8 py-4 rounded-2xl text-lg font-semibold hover:shadow-xl hover:shadow-green-500/25 transform hover:-translate-y-1 transition-all duration-300 flex items-center">
+              <button onClick={handleGetStarted} className="bg-gradient-to-r from-green-500 to-emerald-600 text-white px-8 py-4 rounded-2xl text-lg font-semibold hover:shadow-xl hover:shadow-green-500/25 transform hover:-translate-y-1 transition-all duration-300 flex items-center">
                 Start Free Trial
                 <ArrowRight className="ml-2 h-5 w-5" />
               </button>

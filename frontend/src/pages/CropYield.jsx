@@ -1,7 +1,9 @@
 import { useState } from 'react'
 import { Wheat, TrendingUp, Calendar, Thermometer, Droplets, Wind, MapPin, Zap, Brain, AlertCircle } from 'lucide-react'
+import { useLanguage } from '../contexts/LanguageContext'
 
 const CropYield = () => {
+  const { t } = useLanguage()
   const [formData, setFormData] = useState({
     state: '',
     district: '',
@@ -103,8 +105,8 @@ const apiPayload = {
             <Wheat className="h-6 w-6 text-white" />
           </div>
           <div>
-            <h1 className="text-3xl font-bold text-white">Crop Yield Prediction</h1>
-            <p className="text-slate-400">AI-powered harvest forecasting</p>
+            <h1 className="text-3xl font-bold text-white">{t('cropYieldPrediction')}</h1>
+            <p className="text-slate-400">{t('predictHarvestYields')}</p>
           </div>
         </div>
         <div className="flex items-center space-x-2 text-slate-400">
@@ -119,7 +121,7 @@ const apiPayload = {
           <div className="bg-slate-800/40 backdrop-blur-sm rounded-2xl p-6 border border-slate-700/50">
             <h2 className="text-xl font-bold text-white mb-6 flex items-center">
               <MapPin className="h-5 w-5 mr-2 text-agri-400" />
-              Farm & Crop Details
+              {t('farmCropDetails')}
             </h2>
             
             <form onSubmit={handleSubmit} className="space-y-4">
