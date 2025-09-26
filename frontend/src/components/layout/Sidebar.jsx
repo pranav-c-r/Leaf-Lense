@@ -23,7 +23,8 @@ import {
   PieChart,   
   Store,
   ShoppingCart,
-  Sparkles
+  Sparkles,
+  TreesIcon
 } from 'lucide-react'
 
 const navigation = [
@@ -31,6 +32,13 @@ const navigation = [
     name: 'Dashboard', 
     href: '/dashboard', 
     icon: LayoutDashboard,
+    description: 'Overview & Analytics',
+    gradient: 'from-blue-500 to-blue-600'
+  },
+  { 
+    name: 'Plant Identifier', 
+    href: '/plantidentifier', 
+    icon: TreesIcon,
     description: 'Overview & Analytics',
     gradient: 'from-blue-500 to-blue-600'
   },

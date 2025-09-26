@@ -1,11 +1,9 @@
-// Import necessary functions from the Firebase SDKs
 import { initializeApp } from "firebase/app";
 import { getAnalytics } from "firebase/analytics";
 import { getAuth, GoogleAuthProvider } from "firebase/auth";
 import { getFirestore } from "firebase/firestore";
+import { getMessaging, getToken, onMessage } from "firebase/messaging";
 
-// Your web app's Firebase configuration, using environment variables
-// Vite exposes env variables on the `import.meta.env` object
 const firebaseConfig = {
   apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
   authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN,
@@ -16,14 +14,40 @@ const firebaseConfig = {
   measurementId: import.meta.env.VITE_FIREBASE_MEASUREMENT_ID
 };
 
-// Initialize Firebase
 const app = initializeApp(firebaseConfig);
-
-// Initialize and export Firebase services
 const analytics = getAnalytics(app);
+const messaging = getMessaging(app);
+
 export const auth = getAuth(app);
 export const googleprovider = new GoogleAuthProvider();
 export const database = getFirestore(app);
 
-// Log to console to confirm Firebase has been initialized
+export const requestForToken = (userId) => {
+  return getToken(messaging, { vapidKey: import.meta.env.VITE_FIREBASE_VAPID_KEY })
+    .then((currentToken) => {
+      if (currentToken) {
+        console.log('FCM Token:', currentToken);
+        fetch('/api/farmagent/subscribe', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ userId, token: currentToken }),
+        });
+        return currentToken;
+      } else {
+        console.log('No registration token available. Request permission to generate one.');
+        return null;
+      }
+    }).catch((err) => {
+      console.log('An error occurred while retrieving token. ', err);
+      return null;
+    });
+};
+
+export const onMessageListener = () =>
+  new Promise((resolve) => {
+    onMessage(messaging, (payload) => {
+      resolve(payload);
+    });
+  });
+
 console.log("Firebase initialized successfully!");

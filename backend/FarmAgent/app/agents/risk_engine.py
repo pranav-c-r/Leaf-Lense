@@ -3,12 +3,8 @@ from math import exp
 from dotenv import load_dotenv
 from pathlib import Path
 import os
-
-# Load environment variables from backend root directory
 backend_root = Path(__file__).parent.parent.parent.parent
 load_dotenv(backend_root / '.env')
-
-# Read thresholds from .env with defaults
 DISEASE_RISK_THRESHOLD = float(os.getenv("DISEASE_RISK_THRESHOLD", 0.6))
 PEST_RISK_THRESHOLD = float(os.getenv("PEST_RISK_THRESHOLD", 0.5))
 HIGH_RAIN_THRESHOLD = float(os.getenv("HIGH_RAIN_THRESHOLD", 8))

@@ -28,6 +28,8 @@ import Encyclopedia from './pages/Encyclopedia'
 import SoilChecker from './pages/SoilChecker'
 import ProfitCalculator from './pages/ProfitCalculator'
 import PricePrediction from './pages/PricePrediction'
+import PlantIdentifier from './pages/PlantIdentifier'
+import InteractiveAssistant from './pages/InteractiveAssistant'
 
 function App() {
   return (
@@ -57,7 +59,9 @@ function App() {
           <Route path="/mandi-prices" element={<Layout><MandiPrices /></Layout>} />
           <Route path="/marketplace" element={<Layout><CropMarketplace /></Layout>} />
           <Route path="/orders" element={<Layout><Orders /></Layout>} />
-          <Route path="/notifications" element={<Layout><Notifications /></Layout>} />
+          <Route path="/notifications " element={<Layout><Notifications /></Layout>} />
+          <Route path="/interactiveassistant" element={<Layout><InteractiveAssistant /></Layout>} />
+          <Route path="/plantidentifier" element={<Layout><PlantIdentifier /></Layout>} />
           <Route path="/farmer-dashboard" element={<Layout><FarmerDashboard /></Layout>} />
           <Route path="/buyer-dashboard" element={<Layout><BuyerDashboard /></Layout>} />
           <Route path="/crop-recommendations" element={<Layout><CropRecommendations /></Layout>} />

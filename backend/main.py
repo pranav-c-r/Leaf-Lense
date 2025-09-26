@@ -20,7 +20,8 @@ from marketplace.routes import router as marketplace_router
 from crop_recommendations.routes import router as recommendations_router
 from PricePrediction.routes import router as price_router
 from AIChat.routes import router as ai_router
-
+from plantIdentifier.routes import router as identifier_router
+from interactive.routes import router as interactive_router
 # Create FastAPI app
 app = FastAPI(
     title="Unified Backend",
@@ -47,7 +48,8 @@ app.include_router(marketplace_router, prefix="", tags=["Marketplace"])
 app.include_router(recommendations_router, prefix="", tags=["CropRecommendations"])
 app.include_router(price_router, prefix="/price", tags=["PricePrediction"])
 app.include_router(ai_router, prefix="", tags=["AIChat"])
-
+app.include_router(identifier_router, prefix="/identifier", tags=["PlantIdentifier"])
+app.include_router(interactive_router, prefix="/interactive", tags=["Interactive"])
 @app.get("/")
 def root():
     return {"message": "Unified Backend running successfully"}

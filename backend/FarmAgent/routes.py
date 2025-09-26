@@ -1,10 +1,12 @@
 from fastapi import APIRouter, HTTPException, Request
+from pydantic import BaseModel
 from apscheduler.schedulers.asyncio import AsyncIOScheduler
 from apscheduler.triggers.cron import CronTrigger
 from FarmAgent.app.scheduler import run_daily_pipeline
 from FarmAgent.app.agents.weather_agent import analyze_weather
 from FarmAgent.app.agents.risk_engine import calculate_risks
 from FarmAgent.app.clients.firestore_client import get_firestore_client
+from FarmAgent.app.agents.chat_agent import generate_chat_response
 
 import asyncio
 from dotenv import load_dotenv
@@ -13,13 +15,12 @@ import firebase_admin
 from firebase_admin import credentials, firestore
 import os
 
-
-
-# Define router with prefix and tags
 router = APIRouter(prefix="/farmagent", tags=["FarmAgent"])
-
-# Initialize scheduler
 scheduler = AsyncIOScheduler()
+
+class Subscription(BaseModel):
+    userId: str
+    token: str
 
 @router.on_event("startup")
 async def startup_event():
@@ -30,6 +31,19 @@ async def startup_event():
         print("✅ FarmAgent scheduler started - Daily runs at 6:00 AM IST")
     else:
         print("⚠️ FarmAgent scheduler already running")
+
+@router.post("/subscribe")
+async def subscribe_to_notifications(subscription: Subscription):
+    try:
+        db = get_firestore_client()
+        farmer_ref = db.collection("farmers").document(subscription.userId)
+        farmer_ref.update({"push_subscription_token": subscription.token})
+        return {
+            "status": "success",
+            "message": "Subscribed successfully"
+        }
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Subscription failed: {str(e)}")
 
 @router.get("/")
 async def root():
@@ -54,7 +68,7 @@ async def trigger_pipeline_now():
         return {
             "status": "success",
             "message": "Agent pipeline executed successfully",
-            "action": "check_whatsapp_for_alerts"
+            "action": "check_push_notifications_for_alerts"
         }
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Pipeline failed: {str(e)}")
@@ -157,32 +171,3 @@ async def chat_with_farmer(chat_data: dict):
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Chat failed: {str(e)}")
 
-async def generate_chat_response(farmer, user_question, weather_data, risk_scores):
-    from langchain_google_genai import ChatGoogleGenerativeAI
-    import os
-
-    prompt = f"""
-You are FarmAI, an agricultural expert assistant for {farmer.get('name', 'the farmer')}.
-
-CONTEXT:
-- Location: {farmer.get('district', 'Unknown district')}
-- Crop: {farmer.get('crop', 'Unknown crop')} ({farmer.get('growth_stage', 'Unknown stage')})
-- Current temp: {weather_data.get('current_temp', 'N/A')}°C, Humidity: {weather_data.get('humidity', 'N/A')}%
-- Conditions: {weather_data.get('conditions', 'N/A')}
-- Disease risk: {risk_scores.get('disease_risk', 0)*100}%
-
-QUESTION: {user_question}
-
-Answer specifically for this farmer's situation. Be practical and actionable.
-Keep response under 200 characters. Use simple language.
-"""
-    try:
-        llm = ChatGoogleGenerativeAI(
-            model="gemini-1.5-flash",
-            model_kwargs={}
-        )
-
-        response = llm.invoke(prompt)
-        return response.text.strip()
-    except Exception:
-        return "I'm having trouble processing your question right now. Please try again later."

@@ -1,37 +1,12 @@
-
 import React, { useState, useEffect, useRef } from 'react';
-import { 
-  User, 
-  Mail, 
-  Phone, 
-  MapPin, 
-  Wheat, 
-  Ruler, 
-  Mountain,
-  Droplets,
-  GraduationCap,
-  Globe,
-  Save,
-  X,
-  Edit3,
-  Leaf,
-  Users,
-  CheckCircle,
-  Map,
-  AlertCircle,
-  QrCode,
-  Upload,
-  Camera,
-  Eye,
-  EyeOff,
-  CreditCard
+import {
+  User, Mail, Phone, MapPin, Wheat, Save, X, Edit3, CheckCircle, Map, AlertCircle, QrCode, Upload, CreditCard, Eye, EyeOff
 } from 'lucide-react';
 import jsQR from 'jsqr';
-import { doc, getDoc, setDoc, updateDoc } from 'firebase/firestore';
-import { database, auth } from '../config/firebase';
+import { doc, getDoc, setDoc } from 'firebase/firestore';
+import { database, auth, requestForToken } from '../config/firebase';
 import { onAuthStateChanged } from 'firebase/auth';
 import { useNavigate } from 'react-router-dom';
-
 import { MapContainer, TileLayer, Marker, useMapEvents } from 'react-leaflet';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
@@ -42,9 +17,9 @@ L.Icon.Default.mergeOptions({
   iconUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-icon.png',
   shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-shadow.png',
 });
+
 function LocationMarker({ onLocationSelect, initialPosition }) {
   const [position, setPosition] = useState(initialPosition);
-  
   useMapEvents({
     click(e) {
       const newPosition = e.latlng;
@@ -52,10 +27,7 @@ function LocationMarker({ onLocationSelect, initialPosition }) {
       onLocationSelect(newPosition.lat, newPosition.lng);
     },
   });
-
-  return position === null ? null : (
-    <Marker position={position}></Marker>
-  );
+  return position === null ? null : <Marker position={position}></Marker>;
 }
 
 const Profile = () => {
@@ -65,59 +37,31 @@ const Profile = () => {
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [showMap, setShowMap] = useState(false);
+  const [wantsNotifications, setWantsNotifications] = useState(false);
+  const [originalWantsNotifications, setOriginalWantsNotifications] = useState(false);
 
   const [formData, setFormData] = useState({
-    email: '',
-    username: '',
-    name: '',
-    phone: '',
-    whatsapp_opt_in: false,
-    district: '',
-    lat: 12.9716,
-    lon: 77.5946,
-    crop: '',
-    growth_stage: 'vegetative',
-    language: 'en',
-    userType: 'general',
-    farm_size: '',
-    soil_type: '',
-    irrigation_type: '',
-    experience_level: 'beginner',
-    qr_code_data: '',
-    payment_upi_id: '',
-    payment_method: 'upi'
+    email: '', username: '', name: '', phone: '', whatsapp_opt_in: false, district: '',
+    lat: 12.9716, lon: 77.5946, crop: '', growth_stage: 'vegetative', language: 'en',
+    userType: 'general', farm_size: '', soil_type: '', irrigation_type: '',
+    experience_level: 'beginner', qr_code_data: '', payment_upi_id: '', payment_method: 'upi'
   });
 
   const [originalData, setOriginalData] = useState({ ...formData });
   const [showQRCode, setShowQRCode] = useState(false);
-  const [qrCodeFile, setQrCodeFile] = useState(null);
   const [qrValidationMessage, setQrValidationMessage] = useState('');
   const [isValidatingQR, setIsValidatingQR] = useState(false);
   const fileInputRef = useRef(null);
 
-  // Trusted payment gateways
-  const trustedGateways = [
-    "pay.google.com", 
-    "phonepe.com", 
-    "paytm.com", 
-    "bhimupi.com",
-    "razorpay.com",
-    "mobikwik.com",
-    "freecharge.com",
-    "amazonpay.com",
-    "jiomoney.com",
-    "airtel.in"
-  ];
-  const districts = [
-    'Bangalore', 'Mumbai', 'Delhi', 'Chennai', 'Hyderabad', 'Kolkata',
-    'Pune', 'Ahmedabad', 'Jaipur', 'Lucknow', 'Bhopal', 'Patna'
-  ];
-
+  const trustedGateways = ["pay.google.com", "phonepe.com", "paytm.com", "bhimupi.com", "razorpay.com", "mobikwik.com", "freecharge.com", "amazonpay.com", "jiomoney.com", "airtel.in"];
+  const districts = ['Bangalore', 'Mumbai', 'Delhi', 'Chennai', 'Hyderabad', 'Kolkata', 'Pune', 'Ahmedabad', 'Jaipur', 'Lucknow', 'Bhopal', 'Patna'];
   const crops = ['rice', 'wheat', 'tomato', 'potato', 'cotton', 'sugarcane', 'maize'];
   const soilTypes = ['sandy', 'clay', 'loam', 'silt'];
   const irrigationTypes = ['drip', 'sprinkler', 'flood', 'manual'];
   const experienceLevels = ['beginner', 'intermediate', 'expert'];
   const languages = ['en', 'hi', 'ta', 'te', 'ml'];
+
+
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
       if (user) {
@@ -127,18 +71,20 @@ const Profile = () => {
         navigate('/signin');
       }
     });
-
     return () => unsubscribe();
   }, [navigate]);
+
   const fetchUserData = async (userId) => {
     try {
       setLoading(true);
-      
       const userDoc = await getDoc(doc(database, 'Users', userId));
       const userData = userDoc.exists() ? userDoc.data() : {};
-
       const profileDoc = await getDoc(doc(database, 'farmers', userId));
       const profileData = profileDoc.exists() ? profileDoc.data() : {};
+      
+      const hasToken = !!profileData.push_subscription_token;
+      setWantsNotifications(hasToken);
+      setOriginalWantsNotifications(hasToken);
 
       const mergedData = {
         email: auth.currentUser?.email || '',
@@ -161,7 +107,6 @@ const Profile = () => {
         payment_upi_id: profileData.payment_upi_id || '',
         payment_method: profileData.payment_method || 'upi'
       };
-
       setFormData(mergedData);
       setOriginalData(mergedData);
     } catch (error) {
@@ -173,92 +118,67 @@ const Profile = () => {
   };
 
   const handleInputChange = (field, value) => {
-    setFormData(prev => ({
-      ...prev,
-      [field]: value
-    }));
+    setFormData(prev => ({ ...prev, [field]: value }));
   };
 
   const handleLocationSelect = (lat, lng) => {
-    setFormData(prev => ({
-      ...prev,
-      lat: lat,
-      lon: lng
-    }));
+    setFormData(prev => ({ ...prev, lat, lon: lng }));
   };
 
   const handleDistrictSelect = (district) => {
     const districtCoords = {
-      'Bangalore': { lat: 12.9716, lon: 77.5946 },
-      'Mumbai': { lat: 19.0760, lon: 72.8777 },
-      'Delhi': { lat: 28.6139, lon: 77.2090 },
-      'Chennai': { lat: 13.0827, lon: 80.2707 },
-      'Hyderabad': { lat: 17.3850, lon: 78.4867 },
-      'Kolkata': { lat: 22.5726, lon: 88.3639 },
-      'Pune': { lat: 18.5204, lon: 73.8567 },
-      'Ahmedabad': { lat: 23.0225, lon: 72.5714 },
-      'Jaipur': { lat: 26.9124, lon: 75.7873 },
-      'Lucknow': { lat: 26.8467, lon: 80.9462 },
-      'Bhopal': { lat: 23.2599, lon: 77.4126 },
-      'Patna': { lat: 25.5941, lon: 85.1376 }
+      'Bangalore': { lat: 12.9716, lon: 77.5946 }, 'Mumbai': { lat: 19.0760, lon: 72.8777 },
+      'Delhi': { lat: 28.6139, lon: 77.2090 }, 'Chennai': { lat: 13.0827, lon: 80.2707 },
+      'Hyderabad': { lat: 17.3850, lon: 78.4867 }, 'Kolkata': { lat: 22.5726, lon: 88.3639 },
+      'Pune': { lat: 18.5204, lon: 73.8567 }, 'Ahmedabad': { lat: 23.0225, lon: 72.5714 },
+      'Jaipur': { lat: 26.9124, lon: 75.7873 }, 'Lucknow': { lat: 26.8467, lon: 80.9462 },
+      'Bhopal': { lat: 23.2599, lon: 77.4126 }, 'Patna': { lat: 25.5941, lon: 85.1376 }
     };
-
     const coords = districtCoords[district] || { lat: 0, lon: 0 };
-    
-    setFormData(prev => ({
-      ...prev,
-      district: district,
-      lat: coords.lat,
-      lon: coords.lon
-    }));
+    setFormData(prev => ({ ...prev, district, lat: coords.lat, lon: coords.lon }));
   };
 
   const handleSave = async () => {
-  if (!currentUser) return;
-
-  try {
+    if (!currentUser) return;
     setSaving(true);
-    const profileData = {
-      userId: currentUser.uid,
-      email: formData.email,
-      username: formData.username,
-      name: formData.name,
-      phone: formData.phone,
-      whatsapp_opt_in: formData.whatsapp_opt_in,
-      district: formData.district,
-      lat: formData.lat,
-      lon: formData.lon,
-      crop: formData.crop,
-      growth_stage: formData.growth_stage,
-      language: formData.language,
-      userType: formData.userType,
-      farm_size: formData.farm_size,
-      soil_type: formData.soil_type,
-      irrigation_type: formData.irrigation_type,
-      experience_level: formData.experience_level,
-      qr_code_data: formData.qr_code_data,
-      payment_upi_id: formData.payment_upi_id,
-      payment_method: formData.payment_method,
-      updatedAt: new Date()
-    };
+    try {
+      const profileData = {
+        ...formData,
+        userId: currentUser.uid,
+        updatedAt: new Date()
+      };
 
-    await setDoc(doc(database, "farmers", currentUser.uid), profileData, { merge: true });
-    setOriginalData({ ...formData });
-    setIsEditing(false);
-    setShowMap(false);
+      if (wantsNotifications) {
+        const token = await requestForToken(currentUser.uid);
+        if (token) {
+          profileData.push_subscription_token = token;
+        } else {
+          alert('Notification permission was denied by the browser. Alerts cannot be enabled.');
+          setWantsNotifications(false); 
+          profileData.push_subscription_token = null;
+        }
+      } else {
+        profileData.push_subscription_token = null;
+      }
 
-    alert("Profile saved successfully! You will receive weather alerts starting tomorrow.");
-  } catch (error) {
-    console.error("Error saving profile:", error);
-    alert("Failed to save profile");
-  } finally {
-    setSaving(false);
-  }
-};
-
+      await setDoc(doc(database, "farmers", currentUser.uid), profileData, { merge: true });
+      
+      setOriginalData({ ...formData });
+      setOriginalWantsNotifications(wantsNotifications);
+      setIsEditing(false);
+      setShowMap(false);
+      alert("Profile saved successfully!");
+    } catch (error) {
+      console.error("Error saving profile:", error);
+      alert("Failed to save profile");
+    } finally {
+      setSaving(false);
+    }
+  };
 
   const handleCancel = () => {
     setFormData({ ...originalData });
+    setWantsNotifications(originalWantsNotifications);
     setIsEditing(false);
     setShowMap(false);
   };
@@ -302,36 +222,28 @@ const Profile = () => {
       setQrValidationMessage("❌ Please select a QR code image.");
       return;
     }
-
-    // Validate file type
     if (!file.type.startsWith('image/')) {
       setQrValidationMessage('❌ Please upload a valid image file');
       return;
     }
-
     setIsValidatingQR(true);
     setQrValidationMessage('🔍 Validating QR code...');
-
     try {
       const reader = new FileReader();
       reader.onload = async (e) => {
         try {
           const imageBase64 = e.target.result;
           const qrData = await decodeQR(imageBase64);
-          
           if (!verifyQR(qrData)) {
             setQrValidationMessage("❌ Unverified QR code! Only trusted payment gateways or UPI links are allowed.");
             setIsValidatingQR(false);
             return;
           }
-
           setFormData(prev => ({
             ...prev,
             qr_code_data: imageBase64
           }));
-          setQrCodeFile(file);
           setQrValidationMessage("✅ QR code uploaded successfully!");
-          
         } catch (error) {
           console.error(error);
           setQrValidationMessage("⚠ Error processing QR code.");
@@ -348,8 +260,7 @@ const Profile = () => {
 
   const generateUPIQR = () => {
     if (formData.payment_upi_id) {
-      // Generate UPI QR code data
-      const upiString = `upi://pay?pa=${formData.payment_upi_id}&pn=${formData.name}&cu=INR`;
+      const upiString = `upi://pay?pa=${formData.payment_upi_id}&pn=${encodeURIComponent(formData.name)}&cu=INR`;
       setFormData(prev => ({
         ...prev,
         qr_code_data: upiString
@@ -379,17 +290,20 @@ const Profile = () => {
                 <p className="text-slate-300">Manage your agricultural profile</p>
               </div>
             </div>
-            
             <button
-              onClick={() => setIsEditing(!isEditing)}
+              onClick={() => {
+                if (isEditing) {
+                  handleCancel();
+                }
+                setIsEditing(!isEditing);
+              }}
               disabled={saving}
-              className={`px-6 py-3 rounded-xl font-medium transition-all ${
-                isEditing 
+              className={`px-6 py-3 rounded-xl font-medium transition-all ${isEditing
                   ? 'bg-red-500/20 text-red-400 hover:bg-red-500/30'
                   : 'bg-green-500/20 text-green-400 hover:bg-green-500/30'
-              } disabled:opacity-50`}
+                } disabled:opacity-50`}
             >
-              {isEditing ? 'Cancel Editing' : 'Edit Profile'}
+              {isEditing ? 'Cancel' : 'Edit Profile'}
             </button>
           </div>
         </div>
@@ -397,7 +311,6 @@ const Profile = () => {
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           <div className="bg-slate-800/50 backdrop-blur-sm rounded-2xl p-6 border border-slate-700/50">
             <h2 className="text-xl font-bold text-white mb-4">Profile Summary</h2>
-            
             <div className="space-y-3">
               <div className="flex items-center space-x-3 p-3 bg-slate-700/30 rounded-xl">
                 <Mail className="h-5 w-5 text-blue-400" />
@@ -406,7 +319,6 @@ const Profile = () => {
                   <p className="text-white">{formData.email}</p>
                 </div>
               </div>
-
               <div className="flex items-center space-x-3 p-3 bg-slate-700/30 rounded-xl">
                 <User className="h-5 w-5 text-purple-400" />
                 <div>
@@ -414,7 +326,6 @@ const Profile = () => {
                   <p className="text-white">@{formData.username}</p>
                 </div>
               </div>
-
               {isFarmer && (
                 <>
                   <div className="flex items-center space-x-3 p-3 bg-slate-700/30 rounded-xl">
@@ -427,7 +338,6 @@ const Profile = () => {
                       </p>
                     </div>
                   </div>
-
                   <div className="flex items-center space-x-3 p-3 bg-slate-700/30 rounded-xl">
                     <Wheat className="h-5 w-5 text-yellow-400" />
                     <div>
@@ -438,20 +348,27 @@ const Profile = () => {
                 </>
               )}
             </div>
-
-            {isFarmer && (
+            {isFarmer && wantsNotifications && !isEditing && (
               <div className="mt-6 p-4 bg-green-500/10 border border-green-500/20 rounded-xl">
                 <div className="flex items-center space-x-2 text-green-400">
                   <CheckCircle className="h-5 w-5" />
-                  <span className="text-sm">You will receive daily weather alerts</span>
+                  <span className="text-sm">Daily alerts are enabled.</span>
+                </div>
+              </div>
+            )}
+             {isFarmer && !wantsNotifications && !isEditing && (
+              <div className="mt-6 p-4 bg-yellow-500/10 border border-yellow-500/20 rounded-xl">
+                <div className="flex items-center space-x-2 text-yellow-400">
+                  <AlertCircle className="h-5 w-5" />
+                  <span className="text-sm">Daily alerts are disabled.</span>
                 </div>
               </div>
             )}
           </div>
+
           <div className="lg:col-span-2 space-y-6">
             <div className="bg-slate-800/50 backdrop-blur-sm rounded-2xl p-6 border border-slate-700/50">
               <h3 className="text-lg font-bold text-white mb-4">Basic Information</h3>
-              
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
                   <label className="block text-sm text-slate-300 mb-2">Email</label>
@@ -462,7 +379,6 @@ const Profile = () => {
                     className="w-full p-3 bg-slate-700/30 rounded-xl text-slate-400"
                   />
                 </div>
-
                 <div>
                   <label className="block text-sm text-slate-300 mb-2">Username</label>
                   <input
@@ -473,7 +389,6 @@ const Profile = () => {
                     className="w-full p-3 bg-slate-700/30 rounded-xl text-white disabled:opacity-50"
                   />
                 </div>
-
                 <div className="md:col-span-2">
                   <label className="block text-sm text-slate-300 mb-2">Full Name</label>
                   <input
@@ -486,7 +401,6 @@ const Profile = () => {
                   />
                 </div>
               </div>
-
               <div className="mt-4">
                 <label className="block text-sm text-slate-300 mb-2">I am a</label>
                 <div className="grid grid-cols-2 gap-2">
@@ -494,11 +408,10 @@ const Profile = () => {
                     type="button"
                     onClick={() => handleInputChange('userType', 'farmer')}
                     disabled={!isEditing}
-                    className={`p-3 rounded-xl text-center ${
-                      formData.userType === 'farmer'
+                    className={`p-3 rounded-xl text-center ${formData.userType === 'farmer'
                         ? 'bg-green-500/20 text-green-400 border border-green-500/30'
                         : 'bg-slate-700/30 text-slate-300'
-                    } disabled:opacity-50`}
+                      } disabled:opacity-50`}
                   >
                     Farmer
                   </button>
@@ -506,21 +419,20 @@ const Profile = () => {
                     type="button"
                     onClick={() => handleInputChange('userType', 'general')}
                     disabled={!isEditing}
-                    className={`p-3 rounded-xl text-center ${
-                      formData.userType === 'general'
+                    className={`p-3 rounded-xl text-center ${formData.userType === 'general'
                         ? 'bg-blue-500/20 text-blue-400 border border-blue-500/30'
                         : 'bg-slate-700/30 text-slate-300'
-                    } disabled:opacity-50`}
+                      } disabled:opacity-50`}
                   >
                     General User
                   </button>
                 </div>
               </div>
             </div>
+
             {isFarmer && (
               <div className="bg-slate-800/50 backdrop-blur-sm rounded-2xl p-6 border border-slate-700/50">
                 <h3 className="text-lg font-bold text-white mb-4">Farming Details</h3>
-                
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
                     <label className="block text-sm text-slate-300 mb-2">Phone</label>
@@ -533,7 +445,6 @@ const Profile = () => {
                       className="w-full p-3 bg-slate-700/30 rounded-xl text-white disabled:opacity-50"
                     />
                   </div>
-
                   <div>
                     <label className="block text-sm text-slate-300 mb-2">District</label>
                     <select
@@ -548,7 +459,6 @@ const Profile = () => {
                       ))}
                     </select>
                   </div>
-
                   <div>
                     <label className="block text-sm text-slate-300 mb-2">Main Crop</label>
                     <select
@@ -563,7 +473,6 @@ const Profile = () => {
                       ))}
                     </select>
                   </div>
-
                   <div>
                     <label className="block text-sm text-slate-300 mb-2">Growth Stage</label>
                     <select
@@ -590,7 +499,6 @@ const Profile = () => {
                     <Map className="h-4 w-4" />
                     <span>{showMap ? 'Hide Map' : 'Select Exact Location on Map'}</span>
                   </button>
-                  
                   {showMap && (
                     <div className="mt-2 h-64 rounded-xl overflow-hidden border border-slate-600">
                       <MapContainer
@@ -602,49 +510,56 @@ const Profile = () => {
                           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
                           attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
                         />
-                        <LocationMarker 
+                        <LocationMarker
                           onLocationSelect={handleLocationSelect}
                           initialPosition={[formData.lat, formData.lon]}
                         />
                       </MapContainer>
                     </div>
                   )}
-                  
                   <div className="mt-2 text-xs text-slate-500">
                     Coordinates: {formData.lat.toFixed(6)}, {formData.lon.toFixed(6)}
                   </div>
                 </div>
-
                 <div className="mt-4">
-                  <label className="flex items-center space-x-2">
-                    <input
-                      type="checkbox"
-                      checked={formData.whatsapp_opt_in}
-                      onChange={(e) => handleInputChange('whatsapp_opt_in', e.target.checked)}
+                  <label className="block text-sm text-slate-300 mb-2">Notification Preferences</label>
+                  <div className="flex flex-col sm:flex-row sm:items-center sm:space-x-4 space-y-2 sm:space-y-0">
+                    <button
+                      type="button"
+                      onClick={() => setWantsNotifications(!wantsNotifications)}
                       disabled={!isEditing}
-                      className="w-4 h-4 text-green-400"
-                    />
-                    <span className="text-slate-300">Receive WhatsApp alerts</span>
-                  </label>
+                      className={`w-full sm:w-auto p-3 rounded-xl disabled:opacity-50 disabled:cursor-not-allowed transition-colors ${wantsNotifications ? 'bg-red-500/20 text-red-400 hover:bg-red-500/30' : 'bg-blue-500/20 text-blue-400 hover:bg-blue-500/30'}`}
+                    >
+                      {wantsNotifications ? 'Disable Daily Alerts' : 'Enable Daily Alerts'}
+                    </button>
+                    <label className="flex items-center space-x-2">
+                      <input
+                        type="checkbox"
+                        checked={formData.whatsapp_opt_in}
+                        onChange={(e) => handleInputChange('whatsapp_opt_in', e.target.checked)}
+                        disabled={!isEditing}
+                        className="w-4 h-4 text-green-400 bg-slate-700 border-slate-600 rounded"
+                      />
+                      <span className="text-slate-300 text-sm">Receive WhatsApp alerts</span>
+                    </label>
+                  </div>
                 </div>
 
                 <div className="mt-4 p-4 bg-blue-500/10 border border-blue-500/20 rounded-xl">
                   <div className="flex items-center space-x-2 text-blue-400">
                     <AlertCircle className="h-5 w-5" />
-                    <span className="text-sm">Your farm will receive daily weather alerts at 6:00 AM</span>
+                    <span className="text-sm">Click 'Edit Profile' to change alert preferences. Changes are saved when you click 'Save Changes'.</span>
                   </div>
                 </div>
               </div>
             )}
-            
-            {/* QR Code Payment Section */}
+
             {isFarmer && (
               <div className="bg-slate-800/50 backdrop-blur-sm rounded-2xl p-6 border border-slate-700/50">
                 <h3 className="text-lg font-bold text-white mb-4 flex items-center">
                   <QrCode className="h-5 w-5 mr-2 text-green-400" />
                   Payment QR Code
                 </h3>
-                
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div>
                     <div className="mb-4">
@@ -660,7 +575,6 @@ const Profile = () => {
                         <option value="wallet">Digital Wallet</option>
                       </select>
                     </div>
-
                     {formData.payment_method === 'upi' && (
                       <div className="mb-4">
                         <label className="block text-sm text-slate-300 mb-2">UPI ID</label>
@@ -683,7 +597,6 @@ const Profile = () => {
                         )}
                       </div>
                     )}
-
                     <div>
                       <label className="block text-sm text-slate-300 mb-2">Upload QR Code Image</label>
                       <input
@@ -712,31 +625,27 @@ const Profile = () => {
                           </>
                         )}
                       </button>
-                      
-                      {/* Validation Message */}
                       {qrValidationMessage && (
-                        <div className={`mt-3 p-3 rounded-xl text-sm ${
-                          qrValidationMessage.includes('✅') 
+                        <div className={`mt-3 p-3 rounded-xl text-sm ${qrValidationMessage.includes('✅')
                             ? 'bg-green-500/10 border border-green-500/20 text-green-400'
                             : qrValidationMessage.includes('❌') || qrValidationMessage.includes('⚠')
-                            ? 'bg-red-500/10 border border-red-500/20 text-red-400'
-                            : 'bg-blue-500/10 border border-blue-500/20 text-blue-400'
-                        }`}>
+                              ? 'bg-red-500/10 border border-red-500/20 text-red-400'
+                              : 'bg-blue-500/10 border border-blue-500/20 text-blue-400'
+                          }`}>
                           {qrValidationMessage}
                         </div>
                       )}
                     </div>
                   </div>
-
                   <div>
                     <label className="block text-sm text-slate-300 mb-2">QR Code Preview</label>
                     <div className="bg-slate-700/30 rounded-xl p-4 min-h-48 flex items-center justify-center border border-slate-600">
                       {formData.qr_code_data ? (
                         <div className="text-center">
                           {formData.qr_code_data.startsWith('data:image') ? (
-                            <img 
-                              src={formData.qr_code_data} 
-                              alt="QR Code" 
+                            <img
+                              src={formData.qr_code_data}
+                              alt="QR Code"
                               className="max-w-full max-h-40 rounded-lg mx-auto mb-2"
                             />
                           ) : (
@@ -768,14 +677,13 @@ const Profile = () => {
                     </div>
                   </div>
                 </div>
-
                 <div className="mt-4 p-4 bg-green-500/10 border border-green-500/20 rounded-xl">
                   <div className="flex items-center space-x-2 text-green-400 mb-2">
                     <CreditCard className="h-4 w-4" />
                     <span className="text-sm font-medium">Secure Payment</span>
                   </div>
                   <p className="text-slate-300 text-sm">
-                    Buyers can scan your QR code to make instant payments for crop purchases. 
+                    Buyers can scan your QR code to make instant payments for crop purchases.
                     Your QR code is securely stored and only visible to interested buyers.
                   </p>
                 </div>
@@ -807,3 +715,4 @@ const Profile = () => {
 };
 
 export default Profile;
+
