@@ -57,13 +57,6 @@ const getNavigation = (t) => [
     gradient: 'from-green-500 to-emerald-600'
   },
   { 
-    name: 'Weather Alerts', 
-    href: '/weather-alerts', 
-    icon: Shield,
-    description: 'Live weather & alerts',
-    gradient: 'from-cyan-500 to-cyan-600'
-  },
-  { 
     name: t('fertilizerGuide'), 
     href: '/fertilizer', 
     icon: Beaker,
