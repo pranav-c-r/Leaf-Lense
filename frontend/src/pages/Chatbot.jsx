@@ -3,22 +3,6 @@ import { MessageCircle, Send, Bot, User, Sparkles } from 'lucide-react'
 import aiService from '../services/aiService.js'
 import { useLanguage } from '../contexts/LanguageContext'
 
-const SYSTEM_PROMPT = `
-You are AgriBuddy, a helpful agricultural assistant for Indian farmers. Provide clear, practical farming advice.
-
-Key guidelines:
-- Always include specific measurements with units like kg/ha or ml/acre
-- Mention safety precautions for chemicals and equipment
-- Give timing recommendations for planting and harvesting
-- Suggest cost-effective solutions
-- When unsure, recommend consulting local agronomists
-- Keep responses clear and actionable
-- Adapt advice for Indian farming conditions
-- Format responses in plain text without using asterisks, markdown, or special formatting
-- Use simple bullet points with dashes if needed, but avoid symbols
-`
-
-
 const Chatbot = () => {
   const { t, currentLanguage } = useLanguage()
   const [messages, setMessages] = useState([
@@ -58,7 +42,7 @@ const Chatbot = () => {
 
     try {
       // Call AI service
-      const aiResponse = await aiService.processQuery(userQuery, currentLanguage, 'Delhi', SYSTEM_PROMPT)
+      const aiResponse = await aiService.processQuery(userQuery, currentLanguage, 'Delhi')
       
       const botMessage = {
         id: messages.length + 2,
