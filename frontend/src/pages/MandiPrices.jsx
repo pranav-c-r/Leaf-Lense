@@ -898,4 +898,5 @@ const MandiPrices = () => {
   );
 };
 
+
 export default MandiPrices;
