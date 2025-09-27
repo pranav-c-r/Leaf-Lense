@@ -41,7 +41,7 @@ huggingface_hub==0.24.6
 
 # Web stuff
 requests==2.32.3
-selenium==4.15.2
+
 
 # Misc
 attrs>=23.2.0
