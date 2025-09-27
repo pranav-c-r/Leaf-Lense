@@ -19,7 +19,8 @@ apscheduler==3.10.4
 # Firebase
 firebase-admin==6.5.0
 
-
+# data science
+joblib==1.5.1
 
 # File & parsing utils
 PyPDF2==3.0.1
