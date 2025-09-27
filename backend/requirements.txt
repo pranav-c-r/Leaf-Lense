@@ -19,11 +19,7 @@ apscheduler==3.10.4
 # Firebase
 firebase-admin==6.5.0
 
-# Data science stack
-pandas==2.3.2
-numpy==1.26.4
-scikit-learn==1.7.1
-joblib==1.5.1
+
 
 # File & parsing utils
 PyPDF2==3.0.1
